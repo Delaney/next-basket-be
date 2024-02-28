@@ -1,0 +1,76 @@
+version: "3"
+
+networks:
+    users:
+        name: users
+
+services:
+
+    nginx:
+        image: 'nginx:alpine'
+        container_name: users-nginx
+        restart: unless-stopped
+        ports:
+            - 80:80
+        volumes:
+            - './:/var/www/html'
+            - './docker-compose/nginx:/etc/nginx/conf.d/'
+        networks:
+            - users
+
+    app:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+            args:
+                user: 'laravel'
+                uid: 1000
+        image: users
+        container_name: users-app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - './:/var/www/html'
+        networks:
+            - users
+        depends_on:
+            - postgres
+
+    # app:
+    #     image: php:8.0-apache
+    #     container_name: app
+    #     volumes:
+    #         - ./users-app:/var/www/html
+    #     ports:
+    #         - 8000:8000
+    #     networks:
+    #         - users
+    #     depends_on:
+    #         - postgres
+
+    postgres:
+        image: postgres:13
+        restart: always
+        container_name: users-postgres
+        environment:
+            POSTGRES_DATABASE: users
+            POSTGRES_USER: laravel
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_ROOT_PASSWORD: postgres
+        networks:
+            - users
+        volumes:
+            - db_data:/var/lib/postgresql/data
+
+    # npm:
+    #     image: node:current-alpine
+    #     container_name: npm
+    #     volumes:
+    #         - ./src:/var/www/html
+    #     working_dir: /var/www/html
+    #     entrypoint: ['npm']
+    #     networks:
+    #         - laravel
+
+volumes:
+    db_data:
