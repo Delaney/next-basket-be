@@ -1,0 +1,7 @@
+{
+    "php-cs-fixer.executablePath": "php-cs-fixer",
+    "phpcs.executablePath": "./users/vendor/bin/phpcs",
+    "phpcs.standard": "./users/phpcs.xml",
+    "phpcs.errorSeverity": 5,
+    "phpcs.warningSeverity": 5,
+}
