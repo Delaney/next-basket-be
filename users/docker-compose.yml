@@ -2,13 +2,12 @@ version: "3"
 
 networks:
     users:
-        name: users
+        driver: bridge
 
 services:
 
     nginx:
         image: 'nginx:alpine'
-        container_name: users-nginx
         restart: unless-stopped
         ports:
             - 80:80
@@ -26,7 +25,6 @@ services:
                 user: 'laravel'
                 uid: 1000
         image: users
-        container_name: users-app
         restart: unless-stopped
         working_dir: /var/www/html
         volumes:
@@ -34,43 +32,39 @@ services:
         networks:
             - users
         depends_on:
-            - postgres
+            - mysql
 
-    # app:
-    #     image: php:8.0-apache
-    #     container_name: app
-    #     volumes:
-    #         - ./users-app:/var/www/html
-    #     ports:
-    #         - 8000:8000
-    #     networks:
-    #         - users
-    #     depends_on:
-    #         - postgres
-
-    postgres:
-        image: postgres:13
-        restart: always
-        container_name: users-postgres
+    mysql:
+        image: 'mysql:8.0'
+        restart: unless-stopped
         environment:
-            POSTGRES_DATABASE: users
-            POSTGRES_USER: laravel
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_ROOT_PASSWORD: postgres
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+        ports:
+            - "3306:3306"
+        volumes:
+            - 'db_data:/var/lib/mysql'
+            - './docker-compose/mysql:/docker-entrypoint-initdb.d'
         networks:
             - users
-        volumes:
-            - db_data:/var/lib/postgresql/data
-
-    # npm:
-    #     image: node:current-alpine
-    #     container_name: npm
-    #     volumes:
-    #         - ./src:/var/www/html
-    #     working_dir: /var/www/html
-    #     entrypoint: ['npm']
+    
+    # pgsql:
+    #     image: postgres:15
+    #     restart: always
+    #     environment:
+    #         POSTGRES_DB: users
+    #         POSTGRES_USER: laravel
+    #         POSTGRES_PASSWORD: postgres
+    #         POSTGRES_ROOT_PASSWORD: postgres
+    #     ports:
+    #         - "5432:5432"
     #     networks:
-    #         - laravel
+    #         - users
+    #     volumes:
+    #         - db_data:/var/lib/postgresql/data
 
 volumes:
     db_data:
