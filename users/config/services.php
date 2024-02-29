@@ -25,6 +25,17 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'rabbitmq' => [
+        'host' => env('MQ_HOST'),
+        'port' => env('MQ_PORT'),
+        'user' => env('MQ_USER'),
+        'password' => env('MQ_PASSWORD'),
+        'vhost' => env('MQ_VHOST'),
+        'queue' => env('MQ_QUEUE', ''),
+        'exchange' => env('MQ_EXCHANGE', ''),
+        'key' => env('MQ_KEY', ''),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
