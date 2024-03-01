@@ -5,7 +5,6 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
 
 class RabbitMQService
@@ -45,21 +44,23 @@ class RabbitMQService
         $this->channel->queue_bind($this->queue, $this->exchange, $this->key);
     }
 
+    public function consume($callback)
+    {
+        try {
+            $this->channel->basic_consume($this->queue, '', false, true, false, false, $callback);
+
+            while (count($this->channel->callbacks)) {
+                $this->channel->wait();
+            }
+        } catch (Throwable $ex) {
+            Log::error($ex->getMessage(), $ex->getTrace());
+        }
+    }
+
     public function __destruct()
     {
         $this->connection->close();
         $this->channel->close();
     }
-    
-    public function publish(string $message): void
-    {
-        try {
-            $msg = new AMQPMessage($message);
-            
-            $this->channel->basic_publish($msg, $this->exchange, $this->key);
-            $this->channel->close();
-        } catch (Throwable $ex) {
-            Log::error($ex->getMessage(), $ex->getTrace());
-        }
-    }
+
 }

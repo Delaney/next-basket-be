@@ -19,16 +19,15 @@ RUN mkdir -p /home/$user/.composer && \
 RUN apt-get update && apt-get install -y supervisor && \
     mkdir -p /var/log/supervisor
 
-COPY . /var/www/html
+ADD . /var/www/html
 
 RUN composer install
 
-COPY ./docker-compose/supervisor/worker.conf /etc/supervisor/conf.d/
+# COPY ./docker-compose/supervisor/worker.conf /etc/supervisor/conf.d/
 
-# CMD ["/usr/bin/supervisord"]
-
-ADD . /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+
+# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 WORKDIR /var/www/html
 USER $user

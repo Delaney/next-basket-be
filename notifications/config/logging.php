@@ -126,6 +126,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'mq_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/mq.log'),
+            'replace_placeholders' => false
+        ],
     ],
 
 ];
