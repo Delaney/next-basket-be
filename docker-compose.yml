@@ -1,7 +1,7 @@
 version: "3"
 
 networks:
-    users:
+    application:
         driver: bridge
 
 services:
@@ -15,11 +15,14 @@ services:
             - './:/var/www/html'
             - './docker-compose/nginx:/etc/nginx/conf.d/'
         networks:
+            - application
+        depends_on:
             - users
+            - notifications
 
-    app:
+    users:
         build:
-            context: ./
+            context: ./users/
             dockerfile: Dockerfile
             args:
                 user: 'laravel'
@@ -28,11 +31,26 @@ services:
         restart: unless-stopped
         working_dir: /var/www/html
         volumes:
-            - './:/var/www/html'
+            - './users:/var/www/html'
         networks:
-            - users
+            - application
         depends_on:
             - mysql
+
+    notifications:
+        build:
+            context: ./notifications/
+            dockerfile: Dockerfile
+            args:
+                user: 'laravel'
+                uid: 1000
+        image: notifications
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - './notifications:/var/www/html'
+        networks:
+            - application
 
     mysql:
         image: 'mysql:8.0'
@@ -49,22 +67,7 @@ services:
             - 'db_data:/var/lib/mysql'
             - './docker-compose/mysql:/docker-entrypoint-initdb.d'
         networks:
-            - users
-    
-    # pgsql:
-    #     image: postgres:15
-    #     restart: always
-    #     environment:
-    #         POSTGRES_DB: users
-    #         POSTGRES_USER: laravel
-    #         POSTGRES_PASSWORD: postgres
-    #         POSTGRES_ROOT_PASSWORD: postgres
-    #     ports:
-    #         - "5432:5432"
-    #     networks:
-    #         - users
-    #     volumes:
-    #         - db_data:/var/lib/postgresql/data
+            - application
 
 volumes:
     db_data:
