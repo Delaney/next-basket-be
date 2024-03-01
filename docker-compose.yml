@@ -72,14 +72,18 @@ services:
     notifications-mq:
         build:
             context: ./notifications/
-            dockerfile: Queue.Dockerfile
+            dockerfile: Dockerfile
             args:
                 user: 'laravel'
                 uid: 1000
+        image: notifications-mq
+        restart: unless-stopped
+        working_dir: /var/www/html/notifications
         volumes:
-            - ./notifications:/var/www/html/notifications-mq
-        working_dir: /var/www/html/notifications-mq
+            - './notifications:/var/www/html/notifications'
         entrypoint: ['php', 'artisan', 'mq:consume']
+        depends_on:
+            - notifications
         networks:
             - application
 volumes:

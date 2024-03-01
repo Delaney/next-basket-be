@@ -19,11 +19,10 @@ RUN mkdir -p /home/$user/.composer && \
 RUN apt-get update && apt-get install -y supervisor && \
     mkdir -p /var/log/supervisor
 
-Add . /var/www/html
-
-RUN composer install
+ADD . /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/users
+
 USER $user

@@ -21,9 +21,8 @@ RUN apt-get update && apt-get install -y supervisor && \
 
 ADD . /var/www/html
 
-RUN composer install
-
 RUN chown -R www-data:www-data /var/www/html
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/notifications
+
 USER $user
