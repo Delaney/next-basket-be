@@ -29,7 +29,7 @@ Also add values for the exchange name, the queue name and the routing key.
 
 4. From the root directory, run this script `sh install.sh` to build and start the Docker containers
 
-3. Next, `docker composer exec users php artisan migrate` will run the migrations for the MySQL database.
+3. Next, `docker compose exec users php artisan migrate` will run the migrations for the MySQL database.
 
 At this point, the services should be running.
 
