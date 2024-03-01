@@ -26,17 +26,17 @@ class MQConsume extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         try {
-            $callback = function ($message) {
-                Log::channel('mq_log')->info(json_encode($message->body));
-            };
-
             $rabbitMQService = app(RabbitMQService::class);
-            $rabbitMQService->consume($callback);
+            $rabbitMQService->consume([$this, 'messageCallback']);
         } catch (Throwable $ex) {
             Log::error($ex->getMessage(), $ex->getTrace());
         }
+    }
+
+    public function messageCallback ($message): void {
+        Log::channel(config('services.rabbitmq.log'))->info($message->body);
     }
 }

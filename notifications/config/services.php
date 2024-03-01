@@ -34,6 +34,7 @@ return [
         'queue' => env('MQ_QUEUE', ''),
         'exchange' => env('MQ_EXCHANGE', ''),
         'key' => env('MQ_KEY', ''),
+        'log' => env('MQ_LOG_DRIVER', ''),
     ],
 
     'ses' => [
