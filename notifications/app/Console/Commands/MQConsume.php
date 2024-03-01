@@ -37,6 +37,10 @@ class MQConsume extends Command
     }
 
     public function messageCallback ($message): void {
-        Log::channel(config('services.rabbitmq.log'))->info($message->body);
+        if (gettype($message) === 'object' && $message->body) {
+            $message = $message->body;
+        }
+
+        Log::channel(config('services.rabbitmq.log'))->info($message);
     }
 }
