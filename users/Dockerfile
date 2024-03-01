@@ -23,10 +23,6 @@ Add . /var/www/html
 
 RUN composer install
 
-# COPY ./docker-compose/supervisor/worker.conf /etc/supervisor/conf.d/
-
-# CMD ["/usr/bin/supervisord", "-n"]
-
 RUN chown -R www-data:www-data /var/www/html
 
 WORKDIR /var/www/html
