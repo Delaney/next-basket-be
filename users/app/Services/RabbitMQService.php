@@ -44,12 +44,6 @@ class RabbitMQService
         $this->channel->queue_declare($this->queue, false, false, false, false);
         $this->channel->queue_bind($this->queue, $this->exchange, $this->key);
     }
-
-    public function __destruct()
-    {
-        $this->connection->close();
-        $this->channel->close();
-    }
     
     public function publish(string $message): void
     {
@@ -61,5 +55,24 @@ class RabbitMQService
         } catch (Throwable $ex) {
             Log::error($ex->getMessage(), $ex->getTrace());
         }
+    }
+
+    public function consume($callback)
+    {
+        try {
+            $this->channel->basic_consume($this->queue, '', false, true, false, false, $callback);
+
+            while (count($this->channel->callbacks)) {
+                $this->channel->wait();
+            }
+        } catch (Throwable $ex) {
+            Log::error($ex->getMessage(), $ex->getTrace());
+        }
+    }
+
+    public function __destruct()
+    {
+        $this->connection->close();
+        $this->channel->close();
     }
 }

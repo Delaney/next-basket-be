@@ -29,9 +29,9 @@ services:
                 uid: 1000
         image: users
         restart: unless-stopped
-        working_dir: /var/www/html
+        working_dir: /var/www/html/users
         volumes:
-            - './users:/var/www/html'
+            - './users:/var/www/html/users'
         networks:
             - application
         depends_on:
@@ -46,9 +46,9 @@ services:
                 uid: 1000
         image: notifications
         restart: unless-stopped
-        working_dir: /var/www/html
+        working_dir: /var/www/html/notifications
         volumes:
-            - './notifications:/var/www/html'
+            - './notifications:/var/www/html/notifications'
         networks:
             - application
 
