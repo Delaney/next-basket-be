@@ -41,6 +41,6 @@ class MQConsume extends Command
             $message = $message->body;
         }
 
-        Log::channel(config('services.rabbitmq.log'))->info($message);
+        Log::channel('mq_log')->info($message);
     }
 }

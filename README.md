@@ -12,9 +12,11 @@ This sample project contains two Laravel microservices communicating via RabbitM
 
 2. In the repo root directory, run the following commands to create `.env` files for the microservices:
 ```
-cp users/.env-example users/.env
+cp .env.example .env
 
-cp notifications/.env-example notifications/.env
+cp users/.env.example users/.env
+
+cp notifications/.env.example notifications/.env
 ```
 
 3. Replace the following section with the corresponding values gotten from the CloudAMQP dashboard:
